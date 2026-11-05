@@ -5,12 +5,37 @@ const TTL = 60 * 60 * 8;
 const memory = new Map();
 let forceMemory = false;
 
-function redisEnv() {
+let tcpClient = null;
+
+function restCredentials() {
   if (forceMemory) return null;
   const url = process.env.UPSTASH_REDIS_REST_URL || process.env.KV_REST_API_URL;
   const token = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.KV_REST_API_TOKEN;
   if (!url || !token) return null;
   return { url: url.replace(/\/$/, ""), token };
+}
+
+function tcpUrl() {
+  if (forceMemory || restCredentials()) return "";
+  return process.env.REDIS_URL || process.env.KV_URL || "";
+}
+
+function usingRemote() {
+  return Boolean(restCredentials() || tcpUrl());
+}
+
+function getTcpClient() {
+  const url = tcpUrl();
+  if (!url) return null;
+  if (!tcpClient) {
+    const Redis = require("ioredis");
+    tcpClient = new Redis(url, {
+      maxRetriesPerRequest: 2,
+      connectTimeout: 8000,
+    });
+    tcpClient.on("error", () => {});
+  }
+  return tcpClient;
 }
 
 function roomKey(code) {
@@ -25,8 +50,8 @@ function delay(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function redisCommand(command) {
-  const env = redisEnv();
+async function restCommand(command) {
+  const env = restCredentials();
   const response = await fetch(env.url, {
     method: "POST",
     headers: {
@@ -40,54 +65,84 @@ async function redisCommand(command) {
   return payload.result;
 }
 
+async function tcpCommand(command) {
+  const client = getTcpClient();
+  const [op, ...args] = command;
+  if (op === "GET") return client.get(args[0]);
+  if (op === "DEL") return client.del(args[0]);
+  if (op === "SET") {
+    const key = args[0];
+    const value = args[1];
+    let seconds = null;
+    let onlyNew = false;
+    for (let index = 2; index < args.length; index += 1) {
+      const flag = String(args[index]).toUpperCase();
+      if (flag === "EX") {
+        seconds = Number(args[index + 1]);
+        index += 1;
+      } else if (flag === "NX") onlyNew = true;
+    }
+    if (onlyNew && seconds) return client.set(key, value, "EX", seconds, "NX");
+    if (seconds) return client.set(key, value, "EX", seconds);
+    if (onlyNew) return client.set(key, value, "NX");
+    return client.set(key, value);
+  }
+  throw new Error("Não foi possível acessar o armazenamento da sala.");
+}
+
+async function remoteCommand(command) {
+  if (restCredentials()) return restCommand(command);
+  return tcpCommand(command);
+}
+
 async function storeGet(key) {
-  if (!redisEnv()) {
+  if (!usingRemote()) {
     const value = memory.get(key);
     return value ? structuredClone(value) : null;
   }
-  const result = await redisCommand(["GET", key]);
+  const result = await remoteCommand(["GET", key]);
   return result ? JSON.parse(result) : null;
 }
 
 async function storeSet(key, value) {
-  if (!redisEnv()) {
+  if (!usingRemote()) {
     memory.set(key, structuredClone(value));
     return true;
   }
-  const result = await redisCommand(["SET", key, JSON.stringify(value), "EX", String(TTL)]);
+  const result = await remoteCommand(["SET", key, JSON.stringify(value), "EX", String(TTL)]);
   return result === "OK";
 }
 
 async function storeSetNew(key, value) {
-  if (!redisEnv()) {
+  if (!usingRemote()) {
     if (memory.has(key)) return false;
     memory.set(key, structuredClone(value));
     return true;
   }
-  const result = await redisCommand(["SET", key, JSON.stringify(value), "NX", "EX", String(TTL)]);
+  const result = await remoteCommand(["SET", key, JSON.stringify(value), "NX", "EX", String(TTL)]);
   return result === "OK";
 }
 
 async function storeLock(key) {
-  if (!redisEnv()) {
+  if (!usingRemote()) {
     if (memory.has(key)) return false;
     memory.set(key, "1");
     return true;
   }
-  const result = await redisCommand(["SET", key, "1", "NX", "EX", "8"]);
+  const result = await remoteCommand(["SET", key, "1", "NX", "EX", "8"]);
   return result === "OK";
 }
 
 async function storeDel(key) {
-  if (!redisEnv()) {
+  if (!usingRemote()) {
     memory.delete(key);
     return;
   }
-  await redisCommand(["DEL", key]);
+  await remoteCommand(["DEL", key]);
 }
 
 function storageReady() {
-  if (redisEnv()) return true;
+  if (usingRemote()) return true;
   if (process.env.VERCEL && !forceMemory) return false;
   return true;
 }

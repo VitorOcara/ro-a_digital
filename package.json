@@ -1,6 +1,9 @@
 {
   "name": "agricultura-digital",
   "private": true,
+  "dependencies": {
+    "ioredis": "^5.8.2"
+  },
   "description": "Jogo educativo Agricultura Digital",
   "scripts": {
     "test": "node tests/engine.test.js && node tests/strategies.js && node tests/room.test.js"
