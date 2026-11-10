@@ -168,10 +168,10 @@
   ];
 
   const TEAMS = [
-    { id: "equipe-1", name: "Fazenda Esperança", color: "#2e7d32", accent: "#c8e6c9", emblem: "sprout" },
-    { id: "equipe-2", name: "Fazenda Verde Vida", color: "#0f766e", accent: "#ccfbf1", emblem: "leaf" },
-    { id: "equipe-3", name: "Fazenda Raízes", color: "#92400e", accent: "#fde7c7", emblem: "shovel" },
-    { id: "equipe-4", name: "Fazenda AgroSustentável", color: "#1d4e89", accent: "#dbeafe", emblem: "droplet" },
+    { id: "equipe-1", name: "Sítio Esperança", color: "#2e7d32", accent: "#c8e6c9", emblem: "sprout" },
+    { id: "equipe-2", name: "Sítio Verde Vida", color: "#0f766e", accent: "#ccfbf1", emblem: "leaf" },
+    { id: "equipe-3", name: "Sítio Raízes", color: "#92400e", accent: "#fde7c7", emblem: "shovel" },
+    { id: "equipe-4", name: "Sítio AgroSustentável", color: "#1d4e89", accent: "#dbeafe", emblem: "droplet" },
   ];
 
   const SEASON_THEMES = [

@@ -102,29 +102,9 @@ p { margin: 0 0 10px; }
 .callout strong { display: block; margin-bottom: 4px; }
 
 .scene {
-  height: 320px; position: relative; overflow: hidden;
-  border: 3px solid var(--line); box-shadow: var(--shadow); background: #8fd4ef;
+  border: 3px solid var(--line); box-shadow: var(--shadow); background: #79c2e0; overflow: hidden;
 }
-.sun { position: absolute; width: 64px; height: 64px; border-radius: 50%; background: #ffe566; border: 3px solid var(--line); top: 22px; right: 28px; }
-.cloud { position: absolute; background: white; border: 3px solid var(--line); height: 28px; border-radius: 20px; }
-.cloud:before, .cloud:after { content: ""; position: absolute; background: white; border: 3px solid var(--line); border-radius: 50%; }
-.cloud-a { width: 86px; top: 46px; left: 30px; }
-.cloud-a:before { width: 28px; height: 28px; top: -16px; left: 12px; }
-.cloud-a:after { width: 22px; height: 22px; top: -12px; left: 36px; }
-.cloud-b { width: 64px; top: 78px; left: 120px; }
-.hill { position: absolute; left: -10%; right: -10%; bottom: 78px; height: 90px; background: #7dbb55; border-top: 3px solid var(--line); border-radius: 50% 50% 0 0; }
-.ground { position: absolute; left: 0; right: 0; bottom: 0; height: 86px; background: #67a344; border-top: 3px solid var(--line); }
-.barn { position: absolute; width: 92px; height: 78px; background: #c4493a; border: 3px solid var(--line); bottom: 62px; left: 38px; }
-.barn-roof { position: absolute; left: -12px; right: -12px; top: -28px; height: 36px; background: #8d2d24; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
-.door { position: absolute; width: 24px; height: 34px; background: #f0d2a0; border: 3px solid var(--line); bottom: 0; left: 34px; }
-.tree { position: absolute; right: 46px; bottom: 70px; width: 18px; height: 46px; background: #6b3e26; border: 3px solid var(--line); }
-.tree:before { content: ""; position: absolute; width: 70px; height: 58px; background: #2f7d3a; border: 3px solid var(--line); border-radius: 50%; left: -30px; top: -46px; }
-.crops-pix { position: absolute; left: 150px; right: 120px; bottom: 22px; display: flex; gap: 10px; align-items: flex-end; height: 54px; }
-.crops-pix i { display: block; width: 16px; background: #1f5c34; border: 2px solid var(--line); position: relative; }
-.crops-pix i:nth-child(odd) { height: 34px; background: #8fbf45; }
-.crops-pix i:nth-child(even) { height: 46px; }
-.crops-pix i:after { content: ""; position: absolute; top: -8px; left: 1px; width: 10px; height: 10px; background: #ef4444; border: 2px solid var(--line); border-radius: 50%; }
-.crops-pix i:nth-child(3n):after { background: #facc15; border-radius: 0; }
+.scene img { width: 100%; height: auto; display: block; }
 
 .progress-wrap { margin: 8px 0 16px; }
 .seasons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px; }

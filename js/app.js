@@ -33,7 +33,7 @@
     SALA_AUSENTE: "Não encontrei essa sala. Confira o código de 4 caracteres.",
     CODIGO_INVALIDO: "O código da sala tem 4 caracteres.",
     SEM_PERMISSAO: "Este computador não tem mais acesso a essa sala. Entrem de novo com o código.",
-    CADEIRA_OCUPADA: "Essa fazenda já está com outra equipe. Peça ao professor para liberar o lugar.",
+    CADEIRA_OCUPADA: "Esse sítio já está com outra equipe. Peça ao professor para liberar o lugar.",
     OCUPADO: "A sala está ocupada agora. Tente de novo em alguns segundos.",
     REDE: "Não consegui falar com a sala. Verifiquem a internet.",
     ERRO: "A sala encontrou um erro. Tente de novo.",
@@ -577,7 +577,7 @@
     "close-reveal"() { view.reveal = false; render(); },
     "pick-team"(target) {
       if (room && room.role === "team" && target.dataset.team !== room.teamId) {
-        toast("Este computador já entrou como outra fazenda.");
+        toast("Este computador já entrou como outro sítio.");
         return;
       }
       view.play = "local";
@@ -748,7 +748,7 @@
     storage().saveMaster(master);
     view.play = "local";
     view.screen = "teacher";
-    toast("Partida criada. As quatro fazendas começaram iguais. Sorteiem o primeiro evento.");
+    toast("Partida criada. Os quatro sítios começaram iguais. Sorteiem o primeiro evento.");
   }
 
   function activeContext() {

@@ -160,13 +160,7 @@
   }
 
   function scene() {
-    return `<div class="scene" aria-hidden="true">
-      <div class="sun"></div><div class="cloud cloud-a"></div><div class="cloud cloud-b"></div>
-      <div class="hill"></div><div class="ground"></div>
-      <div class="barn"><div class="barn-roof"></div><div class="door"></div></div>
-      <div class="tree"></div>
-      <div class="crops-pix"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-    </div>`;
+    return `<div class="scene"><img src="img/sitio-ensolarado.png" alt="Sítio ensolarado, com casa, horta, animais e moinho de vento"></div>`;
   }
 
   function how() {
@@ -179,20 +173,20 @@
         <ol>
           <li>Abra o jogo publicado na internet. A sala precisa de conexão.</li>
           <li>No computador do professor, clique em <strong>Criar sala</strong>, confira os nomes e confirme. Aparece um código de 4 caracteres.</li>
-          <li>Cada equipe clica em <strong>Entrar na sala</strong>, digita o código e escolhe a fazenda livre do grupo.</li>
+          <li>Cada equipe clica em <strong>Entrar na sala</strong>, digita o código e escolhe o sítio livre do grupo.</li>
           <li>O professor sorteia o evento, lê a revelação em voz alta e só então abre o planejamento. O evento chega sozinho nos computadores das equipes.</li>
-          <li>Cada equipe monta o plano na própria fazenda e confirma. As outras equipes não veem esse plano antes da colheita.</li>
+          <li>Cada equipe monta o plano no próprio sítio e confirma. As outras equipes não veem esse plano antes da colheita.</li>
           <li>Quando as quatro confirmarem, o professor encerra a produção. A colheita aparece para todo mundo.</li>
           <li>Leiam o relatório, conversem sobre a pergunta e o professor abre a próxima temporada. Na quarta, encerrem a partida e abram o pódio.</li>
         </ol>
-        <p>Se uma equipe entrou na fazenda errada, o professor usa <strong>Liberar lugar</strong>. Reiniciar a sala mantém o mesmo código.</p>
+        <p>Se uma equipe entrou no sítio errado, o professor usa <strong>Liberar lugar</strong>. Reiniciar a sala mantém o mesmo código.</p>
       </details>
       <details><summary>Um computador só, sem internet</summary>
         <p>Dá para jogar abrindo o arquivo neste computador. A partida fica no navegador e não atravessa para outra máquina.</p>
         <ol>
           <li>Clique em <strong>Jogar neste computador</strong>, confira os nomes e comece a partida.</li>
           <li>Sorteie o evento, leia a revelação em voz alta e só então abra o planejamento.</li>
-          <li>Passe o computador para cada equipe. Cada grupo abre a própria fazenda, monta o plano e confirma.</li>
+          <li>Passe o computador para cada equipe. Cada grupo abre o próprio sítio, monta o plano e confirma.</li>
           <li>Quando as quatro confirmarem, o professor encerra a produção.</li>
         </ol>
       </details>
@@ -246,10 +240,10 @@
         <label>Código da sala<br>
           <input class="join-code" type="text" maxlength="4" autocomplete="off" autocapitalize="characters" spellcheck="false" data-room-code value="${esc(model.roomCode || "")}">
         </label>
-        <div class="row-actions"><button type="button" class="btn btn-primary" data-action="look-room">Ver fazendas</button></div>
+        <div class="row-actions"><button type="button" class="btn btn-primary" data-action="look-room">Ver sítios</button></div>
       </div>
       ${seats}
-      <p class="muted">Se a fazenda estiver ocupada e for um engano, o professor libera o lugar no painel.</p>`;
+      <p class="muted">Se o sítio estiver ocupado e for um engano, o professor libera o lugar no painel.</p>`;
   }
 
   function teacher(model) {
@@ -356,11 +350,11 @@
       ? plan.improvements.map((id) => improvement(id).name).join(", ")
       : "Nenhuma melhoria";
     const actions = state.phase === "planning" ? `<div class="row-actions no-print">
-        <button type="button" class="btn btn-small" data-action="pick-team" data-team="${team.id}">Abrir fazenda</button>
+        <button type="button" class="btn btn-small" data-action="pick-team" data-team="${team.id}">Abrir sítio</button>
         ${team.confirmed
           ? `<button type="button" class="btn btn-small" data-action="reopen" data-team="${team.id}">Reabrir decisões</button>`
           : `<button type="button" class="btn btn-small" data-action="ask-empty" data-team="${team.id}">Registrar sem plantio</button>`}
-      </div>` : `<button type="button" class="btn btn-small no-print" data-action="pick-team" data-team="${team.id}">Ver fazenda</button>`;
+      </div>` : `<button type="button" class="btn btn-small no-print" data-action="pick-team" data-team="${team.id}">Ver sítio</button>`;
     const online = model && model.room && model.presence && model.presence[team.id];
     const presence = model && model.room && model.room.role === "host"
       ? `<span class="badge ${online ? "badge-ok" : "badge-wait"}">${online ? "Na sala" : "Ainda não entrou"}</span>`
@@ -441,11 +435,11 @@
     if (!model.state) return `<div class="callout"><strong>A partida ainda não começou</strong><p>Peça ao professor para abrir o painel e começar a oficina.</p>
       <button type="button" class="btn btn-primary" data-action="goto" data-screen="teacher">Ir ao painel do professor</button></div>`;
     const intro = model.state.mode === "room"
-      ? "Este computador é o do professor. Dá para abrir uma fazenda daqui se alguma equipe precisar de ajuda."
+      ? "Este computador é o do professor. Dá para abrir um sítio daqui se alguma equipe precisar de ajuda."
       : model.state.mode === "multi"
-      ? "Este computador é o do professor. Dá para abrir uma fazenda daqui se alguma equipe ficar sem máquina."
+      ? "Este computador é o do professor. Dá para abrir um sítio daqui se alguma equipe ficar sem máquina."
       : "Escolham a propriedade do seu grupo. Quando terminarem, devolvam o computador para a próxima equipe.";
-    return `<h1>Qual é a sua fazenda?</h1><p>${intro}</p><div class="team-grid">${model.state.teams.map((team) =>
+    return `<h1>Qual é o seu sítio?</h1><p>${intro}</p><div class="team-grid">${model.state.teams.map((team) =>
       `<button type="button" class="team-card" data-action="pick-team" data-team="${team.id}" style="border-top: 8px solid ${team.color}">
         <h2>${icon(team.emblem)} ${esc(team.name)}</h2>
         <p>${money(team.money)} · ${team.confirmed ? "decisões confirmadas" : "plano em aberto"}</p>
@@ -847,7 +841,7 @@
       <button type="button" class="btn btn-primary" data-action="open-station-farm" ${stationState.teamId ? "" : "disabled"}>Abrir nossa propriedade</button>
     </div>` : `<div class="callout"><strong>Ainda não há pacote</strong><p>Peçam ao professor o arquivo da temporada, depois que o planejamento for aberto.</p></div>`;
     return `<h1>Computador da equipe</h1>
-      <p>Importem o JSON do professor, escolham a fazenda e devolvam o arquivo de decisão. Este computador não vê o caixa das outras equipes mudar sozinho.</p>
+      <p>Importem o JSON do professor, escolham o sítio e devolvam o arquivo de decisão. Este computador não vê o caixa das outras equipes mudar sozinho.</p>
       <div class="row-actions">
         <label class="btn btn-secondary file-btn">${icon("upload")} Importar arquivo do professor<input type="file" accept="application/json,.json" data-import="auto"></label>
         <button type="button" class="btn btn-danger" data-action="clear-station">Apagar dados deste computador</button>
